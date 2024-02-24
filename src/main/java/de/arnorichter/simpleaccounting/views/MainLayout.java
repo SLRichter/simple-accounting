@@ -4,12 +4,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -19,14 +14,15 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import de.arnorichter.simpleaccounting.data.User;
+import de.arnorichter.simpleaccounting.data.user.User;
 import de.arnorichter.simpleaccounting.security.AuthenticatedUser;
 import de.arnorichter.simpleaccounting.views.accounting.AccountingView;
 import de.arnorichter.simpleaccounting.views.settings.SettingsView;
 import de.arnorichter.simpleaccounting.views.stats.StatsView;
+import org.vaadin.lineawesome.LineAwesomeIcon;
+
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
-import org.vaadin.lineawesome.LineAwesomeIcon;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -58,7 +54,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        H1 appName = new H1("My App");
+        H1 appName = new H1("Simple Accounting");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
 
@@ -75,11 +71,11 @@ public class MainLayout extends AppLayout {
 
         }
         if (accessChecker.hasAccess(StatsView.class)) {
-            nav.addItem(new SideNavItem("Stats", StatsView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
+            nav.addItem(new SideNavItem("Stats", StatsView.class, LineAwesomeIcon.CHART_BAR_SOLID.create()));
 
         }
         if (accessChecker.hasAccess(SettingsView.class)) {
-            nav.addItem(new SideNavItem("Settings", SettingsView.class, LineAwesomeIcon.PENCIL_RULER_SOLID.create()));
+            nav.addItem(new SideNavItem("Settings", SettingsView.class, LineAwesomeIcon.COG_SOLID.create()));
 
         }
 

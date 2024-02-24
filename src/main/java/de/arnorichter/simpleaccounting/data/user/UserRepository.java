@@ -1,4 +1,4 @@
-package de.arnorichter.simpleaccounting.data;
+package de.arnorichter.simpleaccounting.data.user;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;

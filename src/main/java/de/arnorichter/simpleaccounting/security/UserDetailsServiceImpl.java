@@ -1,9 +1,7 @@
 package de.arnorichter.simpleaccounting.security;
 
-import de.arnorichter.simpleaccounting.data.User;
-import de.arnorichter.simpleaccounting.data.UserRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+import de.arnorichter.simpleaccounting.data.user.User;
+import de.arnorichter.simpleaccounting.data.user.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +9,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {

@@ -1,12 +1,13 @@
 package de.arnorichter.simpleaccounting.security;
 
 import com.vaadin.flow.spring.security.AuthenticationContext;
-import de.arnorichter.simpleaccounting.data.User;
-import de.arnorichter.simpleaccounting.data.UserRepository;
-import java.util.Optional;
+import de.arnorichter.simpleaccounting.data.user.User;
+import de.arnorichter.simpleaccounting.data.user.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Component
 public class AuthenticatedUser {

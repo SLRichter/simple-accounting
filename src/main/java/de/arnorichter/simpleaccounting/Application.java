@@ -2,7 +2,7 @@ package de.arnorichter.simpleaccounting;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.theme.Theme;
-import de.arnorichter.simpleaccounting.data.ItemRepository;
+import de.arnorichter.simpleaccounting.data.item.ItemRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
@@ -34,9 +34,9 @@ public class Application implements AppShellConfigurator {
         return new SqlDataSourceScriptDatabaseInitializer(dataSource, properties) {
             @Override
             public boolean initializeDatabase() {
-                if (repository.count() == 0L) {
-                    return super.initializeDatabase();
-                }
+//                if (repository.count() == 0L) {
+//                    return super.initializeDatabase();
+//                }
                 return false;
             }
         };

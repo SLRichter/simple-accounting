@@ -1,5 +1,6 @@
-package de.arnorichter.simpleaccounting.data;
+package de.arnorichter.simpleaccounting.data.item;
 
+import de.arnorichter.simpleaccounting.data.AbstractEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

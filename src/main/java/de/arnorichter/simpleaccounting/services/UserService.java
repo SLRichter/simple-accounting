@@ -1,12 +1,13 @@
 package de.arnorichter.simpleaccounting.services;
 
-import de.arnorichter.simpleaccounting.data.User;
-import de.arnorichter.simpleaccounting.data.UserRepository;
-import java.util.Optional;
+import de.arnorichter.simpleaccounting.data.user.User;
+import de.arnorichter.simpleaccounting.data.user.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
