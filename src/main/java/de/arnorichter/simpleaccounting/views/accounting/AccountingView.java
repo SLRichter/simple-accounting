@@ -1,19 +1,19 @@
 package de.arnorichter.simpleaccounting.views.accounting;
 
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import de.arnorichter.simpleaccounting.security.AuthenticatedUser;
-import de.arnorichter.simpleaccounting.security.SecurityConfiguration;
+import de.arnorichter.simpleaccounting.data.item.Item;
+import de.arnorichter.simpleaccounting.data.item.ItemType;
+import de.arnorichter.simpleaccounting.services.ItemService;
 import de.arnorichter.simpleaccounting.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
-import java.io.File;
+import java.time.LocalDateTime;
 
 @PageTitle("Accounting")
 @Route(value = "accounting", layout = MainLayout.class)
@@ -21,29 +21,21 @@ import java.io.File;
 @PermitAll
 public class AccountingView extends HorizontalLayout {
 
-    private TextField name;
-    private Button sayHello;
-    AuthenticatedUser user;
+    private TextField itemDescription;
+    private TextField amount;
+    private ComboBox<ItemType> itemType;
+    private Button addItem;
 
-    public AccountingView(AuthenticatedUser user) {
-        this.user = user;
-        name = new TextField("Your name");
-        sayHello = new Button("Say hello");
-        var pw = user.get().get().getHashedPassword();
-        SecurityConfiguration conf = new SecurityConfiguration();
-        var encPw = conf.passwordEncoder().matches("user", pw);
-        String userDirectory = new File("").getAbsolutePath();
-        sayHello.addClickListener(e -> {
-            Notification.show("Hello " + name.getValue());
-            System.out.println(userDirectory);
-            System.out.println(encPw);
-        });
-        sayHello.addClickShortcut(Key.ENTER);
+    public AccountingView(ItemService service) {
+        itemDescription = new TextField("Your name");
+        addItem = new Button("Add Item", event -> saveItem(service));
 
         setMargin(true);
-        setVerticalComponentAlignment(Alignment.END, name, sayHello);
-
-        add(name, sayHello);
+        setVerticalComponentAlignment(Alignment.END, itemDescription, addItem);
+        add(itemDescription, addItem);
     }
 
+    private void saveItem(ItemService service) {
+        service.add(new Item("Test", LocalDateTime.now(), ItemType.PLUS, 10.50));
+    }
 }
