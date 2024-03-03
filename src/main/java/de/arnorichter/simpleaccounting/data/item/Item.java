@@ -4,6 +4,7 @@ import de.arnorichter.simpleaccounting.data.AbstractEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,9 +14,12 @@ public class Item extends AbstractEntity {
     private String description;
     private LocalDateTime dateTime;
     private ItemType type;
-    private double amount;
+    private BigDecimal amount;
 
-    public Item(String description, LocalDateTime dateTime, ItemType type, double amount) {
+    public Item() {
+    }
+
+    public Item(String description, LocalDateTime dateTime, ItemType type, BigDecimal amount) {
         this.description = description;
         this.dateTime = dateTime;
         this.type = type;
@@ -46,11 +50,11 @@ public class Item extends AbstractEntity {
         this.type = type;
     }
 
-    public double getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 }
