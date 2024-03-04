@@ -24,12 +24,15 @@ import com.vaadin.flow.router.RouteAlias;
 import de.arnorichter.simpleaccounting.data.item.Item;
 import de.arnorichter.simpleaccounting.data.item.ItemType;
 import de.arnorichter.simpleaccounting.services.ItemService;
+import de.arnorichter.simpleaccounting.tasks.GridRefreshTask;
 import de.arnorichter.simpleaccounting.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @PageTitle("Accounting")
 @Route(value = "accounting", layout = MainLayout.class)
@@ -41,10 +44,12 @@ public class AccountingView extends HorizontalLayout {
     private NumberField itemAmountNumberField;
     private ComboBox<ItemType> itemTypeComboBox;
     private Button addItem;
-    private static Grid<Item> itemGrid;
     private static ItemService itemService;
     private VerticalLayout leftLayout;
     private VerticalLayout rightLayout;
+    private Timer timer;
+    private TimerTask timerTask;
+    public static Grid<Item> itemGrid;
 
     /**
      * AccountingView
@@ -78,26 +83,26 @@ public class AccountingView extends HorizontalLayout {
     }
 
     /**
-     * Beim aufrufen der View
+     * Beim aufrufen der View Timer mit Timertask starten
      *
-     * @param attachEvent anfuegenEvent
+     * @param attachEvent AufrufenEvent
      */
     @Override
     protected void onAttach(AttachEvent attachEvent) {
-        UI.getCurrent().setPollInterval(500);
-        UI.getCurrent().addPollListener(pollEvent -> {
-            itemGrid.setItems(itemService.findAll());
-        });
+        timer = new Timer();
+        timerTask = new GridRefreshTask(UI.getCurrent(), itemService);
+        timer.scheduleAtFixedRate(timerTask, 0, 1000);
     }
 
     /**
-     * Beim verlassen der View
+     * Beim verlassen der View Timertask und Timer stoppen
      *
-     * @param detachEvent abloesenEvent
+     * @param detachEvent VerlassenEvent
      */
     @Override
     protected void onDetach(DetachEvent detachEvent) {
-        UI.getCurrent().setPollInterval(-1);
+        timerTask.cancel();
+        timer.cancel();
     }
 
     /**
