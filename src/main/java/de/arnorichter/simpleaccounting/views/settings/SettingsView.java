@@ -6,15 +6,13 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.Lumo;
 import de.arnorichter.simpleaccounting.views.MainLayout;
-import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Settings")
 @Route(value = "settings", layout = MainLayout.class)
-@AnonymousAllowed
-@PermitAll
+@RolesAllowed("ADMIN")
 @Uses(Icon.class)
 public class SettingsView extends VerticalLayout {
 

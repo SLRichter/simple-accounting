@@ -28,7 +28,6 @@ public class GridRefreshTask extends TimerTask {
      */
     @Override
     public void run() {
-        System.out.println("Test");
         ui.access(() -> AccountingView.itemGrid.setItems(service.findAll()));
     }
 }

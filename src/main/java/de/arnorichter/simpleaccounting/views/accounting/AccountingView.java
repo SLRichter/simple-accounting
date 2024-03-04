@@ -43,7 +43,7 @@ public class AccountingView extends HorizontalLayout {
     private TextField itemDescriptionTextField;
     private NumberField itemAmountNumberField;
     private ComboBox<ItemType> itemTypeComboBox;
-    private Button addItem;
+    private Button addItemBtn;
     private static ItemService itemService;
     private VerticalLayout leftLayout;
     private VerticalLayout rightLayout;
@@ -64,17 +64,18 @@ public class AccountingView extends HorizontalLayout {
         itemGrid.addColumn(createStatusComponentRenderer()).setHeader("Type");
         itemGrid.addColumn(new LocalDateTimeRenderer<>(Item::getDateTime, "MM/dd/yyyy - HH:mm")).setHeader("DateTime");
         itemGrid.addColumn(deleteItemComponentRenderer()).setHeader("Delete");
-
         itemDescriptionTextField = new TextField("Description");
+        itemDescriptionTextField.setWidth("400px");
         itemAmountNumberField = new NumberField("Amount");
         itemAmountNumberField.setSuffixComponent(new Div("€"));
         itemTypeComboBox = new ComboBox<>("Type");
         itemTypeComboBox.setItems(ItemType.values());
         itemTypeComboBox.setLabel("Type");
-        addItem = new Button("Add Item", event ->
+        addItemBtn = new Button("Add Item", event ->
                 saveItem(service, itemDescriptionTextField.getValue(), itemTypeComboBox.getValue(), BigDecimal.valueOf(itemAmountNumberField.getValue())));
-
-        leftLayout = new VerticalLayout(itemDescriptionTextField, itemAmountNumberField, itemTypeComboBox, addItem);
+        addItemBtn.setWidth("192px");
+        addItemBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        leftLayout = new VerticalLayout(itemDescriptionTextField, new HorizontalLayout(itemAmountNumberField, itemTypeComboBox), addItemBtn);
         leftLayout.setWidth("40%");
         rightLayout = new VerticalLayout(itemGrid);
 
