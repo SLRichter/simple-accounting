@@ -28,6 +28,12 @@ public class GridRefreshTask extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		ui.access(() -> AccountingView.itemGrid.setItems(service.findAll()));
+		ui.access(() -> {
+//			var sumMonth = service.findByMonth(AccountingView.datePicker.getValue().getMonth().getValue());
+			AccountingView.itemGrid.setItems(service.findAll());
+//			DecimalFormat dec = new DecimalFormat("#0.00");
+//			AccountingView.month.setText("Current Month Sum: " +
+//					dec.format(sumMonth.stream().mapToDouble(AccountingPosition::getAmount).sum()));
+		});
 	}
 }

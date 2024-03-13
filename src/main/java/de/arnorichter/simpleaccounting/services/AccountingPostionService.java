@@ -1,7 +1,7 @@
 package de.arnorichter.simpleaccounting.services;
 
-import de.arnorichter.simpleaccounting.data.item.AccountingPosition;
-import de.arnorichter.simpleaccounting.data.item.ItemRepository;
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPositionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,9 +12,9 @@ import java.util.Optional;
 @Service
 public class AccountingPostionService {
 
-	private final ItemRepository repository;
+	private final AccountingPositionRepository repository;
 
-	public AccountingPostionService(ItemRepository repository) {
+	public AccountingPostionService(AccountingPositionRepository repository) {
 		this.repository = repository;
 	}
 
@@ -45,6 +45,10 @@ public class AccountingPostionService {
 //    public Page<Item> list(Pageable pageable, Specification<Item> filter) {
 //        return repository.findAll(filter, pageable);
 //    }
+
+	public List<AccountingPosition> findByMonth(int month) {
+		return repository.findByMonth(month);
+	}
 
 	public int count() {
 		return (int) repository.count();

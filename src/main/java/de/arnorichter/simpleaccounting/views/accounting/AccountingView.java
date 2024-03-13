@@ -5,32 +5,34 @@ import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.LocalDateTimeRenderer;
+import com.vaadin.flow.data.renderer.LocalDateRenderer;
+import com.vaadin.flow.data.renderer.NumberRenderer;
 import com.vaadin.flow.function.SerializableBiConsumer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import de.arnorichter.simpleaccounting.data.item.AccountingPosition;
-import de.arnorichter.simpleaccounting.data.item.AccountingPositionType;
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPositionType;
 import de.arnorichter.simpleaccounting.services.AccountingPostionService;
 import de.arnorichter.simpleaccounting.tasks.GridRefreshTask;
 import de.arnorichter.simpleaccounting.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.time.LocalDateTime;
+import java.text.NumberFormat;
+import java.time.LocalDate;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,13 +44,13 @@ public class AccountingView extends HorizontalLayout {
 
 	private TextField itemDescriptionTextField;
 	private NumberField itemAmountNumberField;
-	private ComboBox<AccountingPositionType> itemTypeComboBox;
 	private Button addItemBtn;
 	private static AccountingPostionService accountingPostionService;
 	private VerticalLayout leftLayout;
 	private VerticalLayout rightLayout;
 	private Timer timer;
 	private TimerTask timerTask;
+	public static DatePicker datePicker;
 	public static Grid<AccountingPosition> itemGrid;
 
 	/**
@@ -60,23 +62,31 @@ public class AccountingView extends HorizontalLayout {
 		accountingPostionService = service;
 		itemGrid = new Grid<>(AccountingPosition.class, false);
 		itemGrid.addColumn(AccountingPosition::getDescription).setHeader("Description");
-		itemGrid.addColumn(AccountingPosition::getAmount).setHeader("Amount");
+		itemGrid.addColumn(new NumberRenderer<>(AccountingPosition::getAmount, NumberFormat.getCurrencyInstance()))
+				.setHeader("Amount");
 		itemGrid.addColumn(createStatusComponentRenderer()).setHeader("Type");
-		itemGrid.addColumn(new LocalDateTimeRenderer<>(AccountingPosition::getDateTime, "MM/dd/yyyy - HH:mm")).setHeader("DateTime");
+		itemGrid.addColumn(new LocalDateRenderer<>(AccountingPosition::getDate, "dd.MM.yyyy"))
+				.setHeader("Date");
 		itemGrid.addColumn(deleteItemComponentRenderer()).setHeader("Delete");
+
 		itemDescriptionTextField = new TextField("Description");
 		itemDescriptionTextField.setWidth("400px");
+
 		itemAmountNumberField = new NumberField("Amount");
 		itemAmountNumberField.setSuffixComponent(new Div("€"));
-		itemTypeComboBox = new ComboBox<>("Type");
-		itemTypeComboBox.setItems(AccountingPositionType.values());
-		itemTypeComboBox.setLabel("Type");
+
+		datePicker = new DatePicker("Date");
+		datePicker.setValue(LocalDate.now());
+		datePicker.setInitialPosition(LocalDate.now());
+
 		addItemBtn = new Button("Add Item", event -> saveItem(service, itemDescriptionTextField.getValue(),
-				itemTypeComboBox.getValue(), BigDecimal.valueOf(itemAmountNumberField.getValue())));
+				datePicker.getValue(), itemAmountNumberField.getValue()));
 		addItemBtn.setWidth("192px");
 		addItemBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+
 		leftLayout = new VerticalLayout(itemDescriptionTextField, new HorizontalLayout(itemAmountNumberField,
-				itemTypeComboBox), addItemBtn);
+				datePicker), addItemBtn);
 		leftLayout.setWidth("40%");
 		rightLayout = new VerticalLayout(itemGrid);
 
@@ -112,25 +122,31 @@ public class AccountingView extends HorizontalLayout {
 	 *
 	 * @param service     ItemsService
 	 * @param description Beschreibung
-	 * @param type        Itemtype
+	 * @param date        Datum
 	 * @param amount      Wert
 	 */
-	private void saveItem(AccountingPostionService service, String description, AccountingPositionType type,
-						  BigDecimal amount) {
-		service.add(new AccountingPosition(description, LocalDateTime.now(), type, amount.setScale(2,
-				RoundingMode.HALF_UP)));
+	private void saveItem(AccountingPostionService service, String description, LocalDate date, Double amount) {
+		if (description == null || amount == null) {
+			var notification = new Notification("Please fill in all Fields!");
+			notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+			notification.setDuration(4000);
+			notification.open();
+			return;
+		}
+		AccountingPositionType type = amount < 0 ? AccountingPositionType.EXPENSES : AccountingPositionType.INCOME;
+		service.add(new AccountingPosition(description, date, type, amount));
 	}
 
 	/**
 	 * Styling fuer ItemType Component
 	 */
-	private static final SerializableBiConsumer<Span, AccountingPosition> statusComponentUpdater = (span,
-																									accountingPosition) -> {
-		boolean isAvailable = AccountingPositionType.INCOME.equals(accountingPosition.getType());
-		String theme = String.format("badge %s", isAvailable ? "success" : "error");
-		span.getElement().setAttribute("theme", theme);
-		span.setText(accountingPosition.getType().name());
-	};
+	private static final SerializableBiConsumer<Span, AccountingPosition> statusComponentUpdater =
+			(span, accountingPosition) -> {
+				boolean isAvailable = AccountingPositionType.INCOME.equals(accountingPosition.getType());
+				String theme = String.format("badge %s", isAvailable ? "success" : "error");
+				span.getElement().setAttribute("theme", theme);
+				span.setText(accountingPosition.getType().name());
+			};
 
 	/**
 	 * Renderer für ItemType Component in Grid

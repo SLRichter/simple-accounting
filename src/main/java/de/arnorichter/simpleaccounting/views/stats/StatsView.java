@@ -2,13 +2,14 @@ package de.arnorichter.simpleaccounting.views.stats;
 
 import com.storedobject.chart.*;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import de.arnorichter.simpleaccounting.data.item.AccountingPosition;
-import de.arnorichter.simpleaccounting.data.item.AccountingPositionType;
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPositionType;
 import de.arnorichter.simpleaccounting.services.AccountingPostionService;
 import de.arnorichter.simpleaccounting.views.MainLayout;
 import jakarta.annotation.security.PermitAll;
@@ -24,19 +25,25 @@ import java.util.List;
 public class StatsView extends VerticalLayout {
 
 	private SOChart soChart;
+	private DatePicker datePicker;
+	private Button reloadBtn;
 
-	public StatsView(AccountingPostionService service) throws Exception {
-		soChart = new SOChart();
-		soChart.setSize("900px", "900px");
+	public StatsView(AccountingPostionService service) {
 		LocalDate date = LocalDate.now();
 		List<Chart> charts = new ArrayList<>();
-		Button btn = new Button("Reload", event -> {
+
+		soChart = new SOChart();
+		datePicker = new DatePicker("Date");
+		datePicker.setValue(date);
+		soChart.setSize("900px", "900px");
+
+		reloadBtn = new Button("Reload", event -> {
 			try {
 				soChart.removeAll();
 				soChart.clear();
 				charts.clear();
 
-				createCharts(charts, createMatrix(service, date.minusDays(1)));
+				createCharts(charts, createMatrix(service, datePicker.getValue()));
 				charts.forEach(soChart::add);
 				soChart.update(false);
 
@@ -44,9 +51,9 @@ public class StatsView extends VerticalLayout {
 				throw new RuntimeException(e);
 			}
 		});
-		createCharts(charts, createMatrix(service, date));
+		createCharts(charts, createMatrix(service, datePicker.getValue()));
 		charts.forEach(soChart::add);
-		add(btn, soChart);
+		add(datePicker, reloadBtn, soChart);
 	}
 
 	/**
@@ -58,17 +65,17 @@ public class StatsView extends VerticalLayout {
 	 */
 	private DataMatrix createMatrix(AccountingPostionService service, LocalDate date) {
 		List<AccountingPosition> list = service.findAll();
-		list = list.stream().filter(e -> e.getDateTime().toLocalDate().equals(date)).toList();
+		list = list.stream().filter(e -> e.getDate().getMonth().equals(date.getMonth())).toList();
 		var income = list.stream().filter(e -> e.getType().equals(AccountingPositionType.INCOME)).count();
 		var expenses = list.stream().filter(e -> e.getType().equals(AccountingPositionType.EXPENSES)).count();
 
 		DataMatrix dataMatrix = new DataMatrix("Amount");
-		dataMatrix.setColumnNames(date.toString());
+		dataMatrix.setColumnNames(date.getMonth().toString());
 		dataMatrix.setRowNames("Income", "Expenses");
 		dataMatrix.setRowDataName("Days");
 		dataMatrix.addRow(income);
 		dataMatrix.addRow(expenses);
-		
+
 		return dataMatrix;
 	}
 

@@ -1,28 +1,26 @@
-package de.arnorichter.simpleaccounting.data.item;
+package de.arnorichter.simpleaccounting.data.accountingposition;
 
 import de.arnorichter.simpleaccounting.data.AbstractEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
-@Table(name = "accounting_item")
+@Table(name = "accounting_position")
 public class AccountingPosition extends AbstractEntity {
 
 	private String description;
-	private LocalDateTime dateTime;
+	private LocalDate date;
 	private AccountingPositionType type;
-	private BigDecimal amount;
+	private Double amount;
 
 	public AccountingPosition() {
 	}
 
-	public AccountingPosition(String description, LocalDateTime dateTime, AccountingPositionType type,
-							  BigDecimal amount) {
+	public AccountingPosition(String description, LocalDate date, AccountingPositionType type, Double amount) {
 		this.description = description;
-		this.dateTime = dateTime;
+		this.date = date;
 		this.type = type;
 		this.amount = amount;
 	}
@@ -35,12 +33,12 @@ public class AccountingPosition extends AbstractEntity {
 		this.description = description;
 	}
 
-	public LocalDateTime getDateTime() {
-		return dateTime;
+	public LocalDate getDate() {
+		return date;
 	}
 
-	public void setDateTime(LocalDateTime dateTime) {
-		this.dateTime = dateTime;
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	public AccountingPositionType getType() {
@@ -51,11 +49,11 @@ public class AccountingPosition extends AbstractEntity {
 		this.type = type;
 	}
 
-	public BigDecimal getAmount() {
+	public Double getAmount() {
 		return amount;
 	}
 
-	public void setAmount(BigDecimal amount) {
+	public void setAmount(Double amount) {
 		this.amount = amount;
 	}
 }
