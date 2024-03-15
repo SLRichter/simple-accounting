@@ -3,7 +3,7 @@ package de.arnorichter.simpleaccounting;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.theme.Theme;
-import de.arnorichter.simpleaccounting.data.user.UserRepository;
+import de.arnorichter.simpleaccounting.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
@@ -23,23 +23,23 @@ import javax.sql.DataSource;
 @Push
 public class Application implements AppShellConfigurator {
 
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(Application.class, args);
+	}
 
-    @Bean
-    SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
-                                                                               SqlInitializationProperties properties,
-                                                                               UserRepository repository) {
-        // This bean ensures the database is only initialized when empty
-        return new SqlDataSourceScriptDatabaseInitializer(dataSource, properties) {
-            @Override
-            public boolean initializeDatabase() {
-                if (repository.count() == 0L) {
-                    return super.initializeDatabase();
-                }
-                return false;
-            }
-        };
-    }
+	@Bean
+	SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
+																			   SqlInitializationProperties properties,
+																			   UserRepository repository) {
+		// This bean ensures the database is only initialized when empty
+		return new SqlDataSourceScriptDatabaseInitializer(dataSource, properties) {
+			@Override
+			public boolean initializeDatabase() {
+				if (repository.count() == 0L) {
+					return super.initializeDatabase();
+				}
+				return false;
+			}
+		};
+	}
 }
