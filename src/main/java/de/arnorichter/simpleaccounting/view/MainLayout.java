@@ -1,4 +1,4 @@
-package de.arnorichter.simpleaccounting.views;
+package de.arnorichter.simpleaccounting.view;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -16,9 +16,9 @@ import com.vaadin.flow.server.auth.AccessAnnotationChecker;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import de.arnorichter.simpleaccounting.data.user.User;
 import de.arnorichter.simpleaccounting.security.AuthenticatedUser;
-import de.arnorichter.simpleaccounting.views.accounting.AccountingView;
-import de.arnorichter.simpleaccounting.views.settings.SettingsView;
-import de.arnorichter.simpleaccounting.views.stats.StatsView;
+import de.arnorichter.simpleaccounting.view.accounting.AccountingView;
+import de.arnorichter.simpleaccounting.view.settings.SettingsView;
+import de.arnorichter.simpleaccounting.view.stats.StatsView;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.io.ByteArrayInputStream;

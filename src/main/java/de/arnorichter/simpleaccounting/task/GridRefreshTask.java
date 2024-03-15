@@ -1,8 +1,8 @@
-package de.arnorichter.simpleaccounting.tasks;
+package de.arnorichter.simpleaccounting.task;
 
 import com.vaadin.flow.component.UI;
-import de.arnorichter.simpleaccounting.services.AccountingPostionService;
-import de.arnorichter.simpleaccounting.views.accounting.AccountingView;
+import de.arnorichter.simpleaccounting.service.AccountingPostionService;
+import de.arnorichter.simpleaccounting.view.accounting.AccountingView;
 
 import java.util.TimerTask;
 

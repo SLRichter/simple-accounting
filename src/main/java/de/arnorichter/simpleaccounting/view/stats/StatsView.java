@@ -1,4 +1,4 @@
-package de.arnorichter.simpleaccounting.views.stats;
+package de.arnorichter.simpleaccounting.view.stats;
 
 import com.storedobject.chart.*;
 import com.vaadin.flow.component.button.Button;
@@ -13,8 +13,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
 import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPositionType;
-import de.arnorichter.simpleaccounting.services.AccountingPostionService;
-import de.arnorichter.simpleaccounting.views.MainLayout;
+import de.arnorichter.simpleaccounting.service.AccountingPostionService;
+import de.arnorichter.simpleaccounting.view.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
 import java.text.DecimalFormat;

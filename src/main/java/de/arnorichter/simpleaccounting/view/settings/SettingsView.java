@@ -1,4 +1,4 @@
-package de.arnorichter.simpleaccounting.views.settings;
+package de.arnorichter.simpleaccounting.view.settings;
 
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.Uses;
@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.Lumo;
-import de.arnorichter.simpleaccounting.views.MainLayout;
+import de.arnorichter.simpleaccounting.view.MainLayout;
 import jakarta.annotation.security.RolesAllowed;
 
 @PageTitle("Settings")
@@ -16,18 +16,18 @@ import jakarta.annotation.security.RolesAllowed;
 @Uses(Icon.class)
 public class SettingsView extends VerticalLayout {
 
-    public SettingsView() {
+	public SettingsView() {
 
-        var themeToggle = new Checkbox("Dark theme");
-        themeToggle.addValueChangeListener(e -> {
-            setTheme(e.getValue());
-        });
-        add(themeToggle);
-    }
+		var themeToggle = new Checkbox("Dark theme");
+		themeToggle.addValueChangeListener(e -> {
+			setTheme(e.getValue());
+		});
+		add(themeToggle);
+	}
 
-    private void setTheme(boolean dark) {
-        var js = "document.documentElement.setAttribute('theme', $0)";
+	private void setTheme(boolean dark) {
+		var js = "document.documentElement.setAttribute('theme', $0)";
 
-        getElement().executeJs(js, dark ? Lumo.DARK : Lumo.LIGHT);
-    }
+		getElement().executeJs(js, dark ? Lumo.DARK : Lumo.LIGHT);
+	}
 }

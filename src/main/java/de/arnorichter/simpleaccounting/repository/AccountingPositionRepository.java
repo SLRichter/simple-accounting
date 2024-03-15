@@ -1,6 +1,7 @@
-package de.arnorichter.simpleaccounting.data.accountingposition;
+package de.arnorichter.simpleaccounting.repository;
 
 
+import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
 import de.arnorichter.simpleaccounting.data.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

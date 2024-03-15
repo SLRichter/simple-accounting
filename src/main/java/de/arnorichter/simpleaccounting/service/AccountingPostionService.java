@@ -1,7 +1,7 @@
-package de.arnorichter.simpleaccounting.services;
+package de.arnorichter.simpleaccounting.service;
 
 import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
-import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPositionRepository;
+import de.arnorichter.simpleaccounting.repository.AccountingPositionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

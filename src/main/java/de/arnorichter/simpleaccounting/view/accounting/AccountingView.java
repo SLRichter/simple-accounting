@@ -1,4 +1,4 @@
-package de.arnorichter.simpleaccounting.views.accounting;
+package de.arnorichter.simpleaccounting.view.accounting;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
@@ -26,9 +26,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPosition;
 import de.arnorichter.simpleaccounting.data.accountingposition.AccountingPositionType;
-import de.arnorichter.simpleaccounting.services.AccountingPostionService;
-import de.arnorichter.simpleaccounting.tasks.GridRefreshTask;
-import de.arnorichter.simpleaccounting.views.MainLayout;
+import de.arnorichter.simpleaccounting.service.AccountingPostionService;
+import de.arnorichter.simpleaccounting.task.GridRefreshTask;
+import de.arnorichter.simpleaccounting.view.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
 import java.text.NumberFormat;
