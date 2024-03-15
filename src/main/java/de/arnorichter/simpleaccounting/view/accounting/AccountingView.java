@@ -36,6 +36,9 @@ import java.time.LocalDate;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Die Klasse AccountingView stellt die Benutzeroberfläche für die Buchhaltung dar.
+ */
 @PageTitle("Accounting")
 @Route(value = "accounting", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
@@ -54,9 +57,9 @@ public class AccountingView extends HorizontalLayout {
 	public static Grid<AccountingPosition> itemGrid;
 
 	/**
-	 * AccountingView
+	 * Konstruktor für die AccountingView.
 	 *
-	 * @param service ItemService
+	 * @param service Der AccountingPositionService.
 	 */
 	public AccountingView(AccountingPostionService service) {
 		accountingPostionService = service;
@@ -95,9 +98,9 @@ public class AccountingView extends HorizontalLayout {
 	}
 
 	/**
-	 * Beim aufrufen der View Timer mit Timertask starten
+	 * Diese Methode wird aufgerufen, wenn die Ansicht angehängt wird.
 	 *
-	 * @param attachEvent AufrufenEvent
+	 * @param attachEvent Das Anhängen-Ereignis.
 	 */
 	@Override
 	protected void onAttach(AttachEvent attachEvent) {
@@ -107,9 +110,9 @@ public class AccountingView extends HorizontalLayout {
 	}
 
 	/**
-	 * Beim verlassen der View Timertask und Timer stoppen
+	 * Diese Methode wird aufgerufen, wenn die Ansicht entfernt wird.
 	 *
-	 * @param detachEvent VerlassenEvent
+	 * @param detachEvent Das Entfernen-Ereignis.
 	 */
 	@Override
 	protected void onDetach(DetachEvent detachEvent) {
@@ -118,12 +121,12 @@ public class AccountingView extends HorizontalLayout {
 	}
 
 	/**
-	 * Item in Datenbank speichern
+	 * Speichert ein Element in der Datenbank.
 	 *
-	 * @param service     ItemsService
-	 * @param description Beschreibung
-	 * @param date        Datum
-	 * @param amount      Wert
+	 * @param service     Der AccountingPositionService.
+	 * @param description Die Beschreibung des Elements.
+	 * @param date        Das Datum des Elements.
+	 * @param amount      Der Betrag des Elements.
 	 */
 	private void saveItem(AccountingPostionService service, String description, LocalDate date, Double amount) {
 		if (description == null || amount == null) {
@@ -138,7 +141,7 @@ public class AccountingView extends HorizontalLayout {
 	}
 
 	/**
-	 * Styling fuer ItemType Component
+	 * Stil für das ItemType-Element.
 	 */
 	private static final SerializableBiConsumer<Span, AccountingPosition> statusComponentUpdater =
 			(span, accountingPosition) -> {
@@ -149,18 +152,18 @@ public class AccountingView extends HorizontalLayout {
 			};
 
 	/**
-	 * Renderer für ItemType Component in Grid
+	 * Erstellt einen Renderer für das ItemType-Element in der Tabelle.
 	 *
-	 * @return ComponentRenderer
+	 * @return Der ComponentRenderer.
 	 */
 	private static ComponentRenderer<Span, AccountingPosition> createStatusComponentRenderer() {
 		return new ComponentRenderer<>(Span::new, statusComponentUpdater);
 	}
 
 	/**
-	 * Renderer für delete Component in Grid
+	 * Erstellt einen Renderer für das Löschen-Element in der Tabelle.
 	 *
-	 * @return ComponentRenderer
+	 * @return Der ComponentRenderer.
 	 */
 	private static ComponentRenderer<Button, AccountingPosition> deleteItemComponentRenderer() {
 		return new ComponentRenderer<>(Button::new, (button, accountingPosition) -> {
