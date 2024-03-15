@@ -1,5 +1,6 @@
 package de.arnorichter.simpleaccounting.view.stats;
 
+import com.opencsv.CSVWriter;
 import com.storedobject.chart.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -17,6 +18,9 @@ import de.arnorichter.simpleaccounting.service.AccountingPostionService;
 import de.arnorichter.simpleaccounting.view.MainLayout;
 import jakarta.annotation.security.PermitAll;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,13 +53,19 @@ public class StatsView extends HorizontalLayout {
 	private H5 sumTextH5;
 	private H5 sumH5;
 	private List<Chart> charts = new ArrayList<>();
-	private DecimalFormat dec = new DecimalFormat("#0.00");
+	private DecimalFormat dec = new DecimalFormat("#0.00 €");
 	LocalDate date = LocalDate.now();
 
+	/**
+	 * Konstruktor für die StatsView-Klasse.
+	 *
+	 * @param service Der AccountingPostionService, der für den Zugriff auf die Daten verwendet wird.
+	 */
 	public StatsView(AccountingPostionService service) {
-
 		setSizeFull();
-		add(leftLayout(service), rightLayout(service));
+		add(leftLayout(service), rightLayout());
+
+		reloadData(service);
 	}
 
 	/**
@@ -65,7 +75,6 @@ public class StatsView extends HorizontalLayout {
 	 * @return VerticalLayout-Komponente, die die linke Seite der Benutzeroberfläche darstellt.
 	 */
 	private VerticalLayout leftLayout(AccountingPostionService service) {
-
 		//Elemente und Styling
 		leftVLayout = new VerticalLayout();
 		leftVLayout.setHeightFull();
@@ -83,9 +92,7 @@ public class StatsView extends HorizontalLayout {
 		datePicker.setValue(date);
 		datePicker.setWidth("100%");
 
-		LocalDate datePickerValue = datePicker.getValue();
-
-		monthH4 = new H4(date.getMonth() + " " + date.getYear());
+		monthH4 = new H4();
 		expensesTextH5 = new H5("Expenses:");
 		expensesH5 = new H5();
 		incomeTextH5 = new H5("Income:");
@@ -93,26 +100,9 @@ public class StatsView extends HorizontalLayout {
 		sumTextH5 = new H5("Sum:");
 		sumH5 = new H5();
 
-		//Werte setzen
-		setValues(service, date);
-
 		//Button-Funktionalität
-		reloadBtn = new Button("Reload", event -> {
-			try {
-				soChart.removeAll();
-				soChart.clear();
-				charts.clear();
+		reloadBtn = new Button("Reload", event -> reloadData(service));
 
-				createCharts(charts, createMatrix(service, datePickerValue));
-				charts.forEach(soChart::add);
-				soChart.update(false);
-
-				setValues(service, datePickerValue);
-
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		});
 		reloadBtn.setWidth("100%");
 
 		leftInnerTopVLayout.add(datePicker, reloadBtn);
@@ -125,11 +115,9 @@ public class StatsView extends HorizontalLayout {
 	/**
 	 * Erstellt und konfiguriert das rechte vertikale Layout der Benutzeroberfläche.
 	 *
-	 * @param service Ein AccountingPostionService-Objekt, das zum Abrufen von Daten verwendet wird.
 	 * @return VerticalLayout-Komponente, die die rechte Seite der Benutzeroberfläche darstellt.
 	 */
-	private VerticalLayout rightLayout(AccountingPostionService service) {
-
+	private VerticalLayout rightLayout() {
 		//Elemente und Styling
 		rightVLayout = new VerticalLayout();
 		rightVLayout.setHeightFull();
@@ -144,7 +132,6 @@ public class StatsView extends HorizontalLayout {
 		soChart.setHeightFull();
 
 		//Diagramme erstellen
-		createCharts(charts, createMatrix(service, datePicker.getValue()));
 		charts.forEach(soChart::add);
 
 		rightInnerTopVLayout.add(soChart);
@@ -153,16 +140,71 @@ public class StatsView extends HorizontalLayout {
 	}
 
 	/**
+	 * Aktualisiert die Daten und Diagramme basierend auf dem ausgewählten Datum im DatePicker.
+	 *
+	 * @param service Der AccountingPostionService, der für den Zugriff auf die Daten verwendet wird.
+	 */
+	private void reloadData(AccountingPostionService service) {
+		try {
+			LocalDate datePickerValue = datePicker.getValue();
+			List<AccountingPosition> accountingPositions = service.findByMonthYear(datePickerValue.getMonthValue(),
+					datePickerValue.getYear());
+			var date = datePickerValue.getMonth() + " " + datePickerValue.getYear();
+			soChart.removeAll();
+			soChart.clear();
+			charts.clear();
+
+			createCharts(charts, createMatrix(accountingPositions));
+			charts.forEach(soChart::add);
+			soChart.update(false);
+
+			setValues(accountingPositions, date);
+
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Exportiert Daten in eine CSV-Datei.
+	 */
+	private void exportDataToCSV() {
+		// first create file object for file placed at location
+		// specified by filepath
+		File file = new File("filePath");
+		try {
+			// create FileWriter object with file as parameter
+			FileWriter outputfile = new FileWriter(file);
+
+			// create CSVWriter object filewriter object as parameter
+			CSVWriter writer = new CSVWriter(outputfile);
+
+			// adding header to csv
+			String[] header = {"Description", "Date", "Amount"};
+			writer.writeNext(header);
+
+			// add data to csv
+			String[] data1 = {"Aman", "10", "620"};
+			writer.writeNext(data1);
+			String[] data2 = {"Suraj", "10", "630"};
+			writer.writeNext(data2);
+
+			// closing writer connection
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Setzt die Werte für Ausgaben, Einnahmen und Summe basierend auf dem ausgewählten Datum und den abgerufenen
 	 * Daten.
 	 *
-	 * @param service         AccountingPostionService für das holen der Daten aus der DB
-	 * @param datePickerValue Ausgewähltes Datum
+	 * @param accountingPositions Die Liste der Buchungsposten.
+	 * @param date                Das ausgewählte Datum.
 	 */
-	private void setValues(AccountingPostionService service, LocalDate datePickerValue) {
-
-		List<AccountingPosition> accountingPositions = service.findByMonthYear(datePickerValue.getMonthValue(),
-				datePickerValue.getYear());
+	private void setValues(List<AccountingPosition> accountingPositions, String date) {
 		var income = accountingPositions.stream()
 				.filter(e -> e.getType().equals(AccountingPositionType.INCOME))
 				.mapToDouble(AccountingPosition::getAmount).sum();
@@ -171,25 +213,22 @@ public class StatsView extends HorizontalLayout {
 				.mapToDouble(AccountingPosition::getAmount).sum();
 		var sum = accountingPositions.stream().mapToDouble(AccountingPosition::getAmount).sum();
 
-		monthH4.setText(datePickerValue.getMonth() + " " + datePickerValue.getYear());
-		expensesH5.setText(dec.format(expenses) + "€");
-		incomeH5.setText(dec.format(income) + "€");
-		sumH5.setText(dec.format(sum) + "€");
+		monthH4.setText(date);
+		expensesH5.setText(dec.format(expenses));
+		incomeH5.setText(dec.format(income));
+		sumH5.setText(dec.format(sum));
 	}
 
 	/**
 	 * Erstellt die Datenmatrix, die als Grundlage für die Diagramme dient.
 	 *
-	 * @param service AccountingPositionService für das holen der Daten aus der DB
-	 * @param date    Datum für welches die Daten geholt werden sollen
+	 * @param accountingPositions Die Liste der Buchungsposten.
 	 * @return Die Datenmatrix, welche die Diagrammdaten enthält.
 	 */
-	private DataMatrix createMatrix(AccountingPostionService service, LocalDate date) {
-		List<AccountingPosition> accountingPositions = service.findByMonthYear(date.getMonthValue(), date.getYear());
-
+	private DataMatrix createMatrix(List<AccountingPosition> accountingPositions) {
 		DataMatrix dataMatrix = new DataMatrix("Amount");
 
-		dataMatrix.setRowNames("Income", "Expenses");
+		dataMatrix.setRowNames("Income in €", "Expenses in €");
 		dataMatrix.setRowDataName("Days");
 
 		CategoryData dateCategory = new CategoryData();
@@ -221,7 +260,6 @@ public class StatsView extends HorizontalLayout {
 	 * @param dataMatrix Datenmatrix, welche die Daten für die Diagramme enthält
 	 */
 	private void createCharts(List<Chart> charts, DataMatrix dataMatrix) {
-
 		// Achsen definieren
 		XAxis xAxisProduct = new XAxis(DataType.CATEGORY);
 		xAxisProduct.setName(dataMatrix.getColumnDataName());
@@ -242,7 +280,7 @@ public class StatsView extends HorizontalLayout {
 		// Balkendiagramme erstellen
 		for (int i = 0; i < dataMatrix.getRowCount(); i++) {
 			BarChart bc = new BarChart(dataMatrix.getColumnNames(), dataMatrix.getRow(i));
-			if (dataMatrix.getRowName(i).equals("Income")) {
+			if (dataMatrix.getRowName(i).equals("Income in €")) {
 				bc.setColors(new Color("#008000"));
 			} else {
 				bc.setColors(new Color("#FF0000"));
