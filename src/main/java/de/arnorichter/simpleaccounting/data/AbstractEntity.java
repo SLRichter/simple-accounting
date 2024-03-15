@@ -1,52 +1,76 @@
 package de.arnorichter.simpleaccounting.data;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 
+/**
+ * Die abstrakte Klasse AbstractEntity dient als Basisklasse für alle Entitätsklassen.
+ */
 @MappedSuperclass
 public abstract class AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idgenerator")
-    // The initial value is to account for data.sql demo data ids
-    @SequenceGenerator(name = "idgenerator", initialValue = 1000)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idgenerator")
+	// Der initiale Wert berücksichtigt IDs für Demodaten aus data.sql
+	@SequenceGenerator(name = "idgenerator", initialValue = 1000)
+	private Long id;
 
-    @Version
-    private int version;
+	@Version
+	private int version;
 
-    public Long getId() {
-        return id;
-    }
+	/**
+	 * Ruft die ID der Entität ab.
+	 *
+	 * @return Die ID der Entität.
+	 */
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	/**
+	 * Legt die ID der Entität fest.
+	 *
+	 * @param id Die ID der Entität.
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public int getVersion() {
-        return version;
-    }
+	/**
+	 * Ruft die Versionsnummer der Entität ab.
+	 *
+	 * @return Die Versionsnummer der Entität.
+	 */
+	public int getVersion() {
+		return version;
+	}
 
-    @Override
-    public int hashCode() {
-        if (getId() != null) {
-            return getId().hashCode();
-        }
-        return super.hashCode();
-    }
+	/**
+	 * Gibt den Hashcode für die Entität zurück.
+	 *
+	 * @return Der Hashcode für die Entität.
+	 */
+	@Override
+	public int hashCode() {
+		if (getId() != null) {
+			return getId().hashCode();
+		}
+		return super.hashCode();
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof AbstractEntity that)) {
-            return false; // null or not an AbstractEntity class
-        }
-        if (getId() != null) {
-            return getId().equals(that.getId());
-        }
-        return super.equals(that);
-    }
+	/**
+	 * Vergleicht diese Entität mit einem anderen Objekt auf Gleichheit.
+	 *
+	 * @param obj Das Objekt, das mit dieser Entität verglichen werden soll.
+	 * @return true, wenn das übergebene Objekt mit dieser Entität gleich ist, andernfalls false.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof AbstractEntity that)) {
+			return false; // null or not an AbstractEntity class
+		}
+		if (getId() != null) {
+			return getId().equals(that.getId());
+		}
+		return super.equals(that);
+	}
 }

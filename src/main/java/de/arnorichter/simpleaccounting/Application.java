@@ -13,25 +13,38 @@ import org.springframework.context.annotation.Bean;
 import javax.sql.DataSource;
 
 /**
- * The entry point of the Spring Boot application.
+ * Der Einstiegspunkt der Spring Boot-Anwendung.
  * <p>
- * Use the @PWA annotation make the application installable on phones, tablets
- * and some desktop browsers.
+ * Verwenden Sie die @PWA Annotation, um die Anwendung auf Telefonen, Tablets
+ * und einigen Desktop-Browsern installierbar zu machen.
  */
 @SpringBootApplication
 @Theme(value = "simple-accounting")
 @Push
 public class Application implements AppShellConfigurator {
 
+	/**
+	 * Die main-Methode startet die Spring Boot-Anwendung.
+	 *
+	 * @param args Die Befehlszeilenargumente.
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
+	/**
+	 * Erstellt den Bean für die Initialisierung der Datenquelle.
+	 *
+	 * @param dataSource Die Datenquelle.
+	 * @param properties Die Initialisierungseigenschaften für SQL.
+	 * @param repository Das Benutzer-Repository.
+	 * @return Der Datenbankinitialisierer.
+	 */
 	@Bean
 	SqlDataSourceScriptDatabaseInitializer dataSourceScriptDatabaseInitializer(DataSource dataSource,
 																			   SqlInitializationProperties properties,
 																			   UserRepository repository) {
-		// This bean ensures the database is only initialized when empty
+		// Dieser Bean stellt sicher, dass die Datenbank nur initialisiert wird, wenn sie leer ist
 		return new SqlDataSourceScriptDatabaseInitializer(dataSource, properties) {
 			@Override
 			public boolean initializeDatabase() {

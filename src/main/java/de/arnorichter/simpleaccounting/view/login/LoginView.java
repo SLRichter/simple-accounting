@@ -11,6 +11,9 @@ import com.vaadin.flow.server.VaadinService;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import de.arnorichter.simpleaccounting.security.AuthenticatedUser;
 
+/**
+ * Die Klasse LoginView stellt die Benutzeroberfläche für die Anmeldung dar.
+ */
 @AnonymousAllowed
 @PageTitle("Login")
 @Route(value = "login")
@@ -18,6 +21,11 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 
 	private final AuthenticatedUser authenticatedUser;
 
+	/**
+	 * Konstruktor für die LoginView.
+	 *
+	 * @param authenticatedUser Das AuthenticatedUser-Objekt.
+	 */
 	public LoginView(AuthenticatedUser authenticatedUser) {
 		this.authenticatedUser = authenticatedUser;
 		setAction(RouteUtil.getRoutePath(VaadinService.getCurrent().getContext(), getClass()));
@@ -33,10 +41,15 @@ public class LoginView extends LoginOverlay implements BeforeEnterObserver {
 		setOpened(true);
 	}
 
+	/**
+	 * Diese Methode wird aufgerufen, bevor die Ansicht betreten wird.
+	 *
+	 * @param event Das BeforeEnterEvent.
+	 */
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
 		if (authenticatedUser.get().isPresent()) {
-			// Already logged in
+			// Bereits angemeldet
 			setOpened(false);
 			event.forwardTo("");
 		}

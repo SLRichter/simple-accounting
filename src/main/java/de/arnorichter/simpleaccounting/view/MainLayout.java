@@ -25,7 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Optional;
 
 /**
- * The main view is a top-level placeholder for other views.
+ * Die Hauptansicht ist ein Top-Level-Platzhalter für andere Ansichten.
  */
 public class MainLayout extends AppLayout {
 
@@ -34,6 +34,12 @@ public class MainLayout extends AppLayout {
 	private AuthenticatedUser authenticatedUser;
 	private AccessAnnotationChecker accessChecker;
 
+	/**
+	 * Konstruktor für das MainLayout.
+	 *
+	 * @param authenticatedUser Das AuthenticatedUser-Objekt.
+	 * @param accessChecker     Der AccessAnnotationChecker.
+	 */
 	public MainLayout(AuthenticatedUser authenticatedUser, AccessAnnotationChecker accessChecker) {
 		this.authenticatedUser = authenticatedUser;
 		this.accessChecker = accessChecker;
@@ -43,6 +49,9 @@ public class MainLayout extends AppLayout {
 		addHeaderContent();
 	}
 
+	/**
+	 * Fügt Inhalte zum Header hinzu, einschließlich des Titels und des Menü-Toggles.
+	 */
 	private void addHeaderContent() {
 		DrawerToggle toggle = new DrawerToggle();
 		toggle.setAriaLabel("Menu toggle");
@@ -53,6 +62,9 @@ public class MainLayout extends AppLayout {
 		addToNavbar(true, toggle, viewTitle);
 	}
 
+	/**
+	 * Fügt Inhalte zum Drawer hinzu, einschließlich der Navigationsleiste und des Footers.
+	 */
 	private void addDrawerContent() {
 		H1 appName = new H1("Simple Accounting");
 		appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
@@ -63,25 +75,32 @@ public class MainLayout extends AppLayout {
 		addToDrawer(header, scroller, createFooter());
 	}
 
+	/**
+	 * Erstellt die Navigationsleiste mit den verfügbaren Ansichten.
+	 *
+	 * @return Die SideNav mit den Navigationspunkten.
+	 */
 	private SideNav createNavigation() {
 		SideNav nav = new SideNav();
 
 		if (accessChecker.hasAccess(AccountingView.class)) {
 			nav.addItem(new SideNavItem("Accounting", AccountingView.class, LineAwesomeIcon.GLOBE_SOLID.create()));
-
 		}
 		if (accessChecker.hasAccess(StatsView.class)) {
 			nav.addItem(new SideNavItem("Month Stats", StatsView.class, LineAwesomeIcon.CHART_BAR_SOLID.create()));
-
 		}
 		if (accessChecker.hasAccess(SettingsView.class)) {
 			nav.addItem(new SideNavItem("Settings", SettingsView.class, LineAwesomeIcon.COG_SOLID.create()));
-
 		}
 
 		return nav;
 	}
 
+	/**
+	 * Erstellt den Footer für den Drawer, der Informationen zum angemeldeten Benutzer enthält.
+	 *
+	 * @return Der Footer mit Benutzerinformationen oder einem Anmelde-Link.
+	 */
 	private Footer createFooter() {
 		Footer layout = new Footer();
 
@@ -121,12 +140,20 @@ public class MainLayout extends AppLayout {
 		return layout;
 	}
 
+	/**
+	 * Wird nach der Navigation aufgerufen, um den Titel der aktuellen Seite zu aktualisieren.
+	 */
 	@Override
 	protected void afterNavigation() {
 		super.afterNavigation();
 		viewTitle.setText(getCurrentPageTitle());
 	}
 
+	/**
+	 * Ruft den Titel der aktuellen Seite ab.
+	 *
+	 * @return Der Titel der aktuellen Seite.
+	 */
 	private String getCurrentPageTitle() {
 		PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
 		return title == null ? "" : title.value();
