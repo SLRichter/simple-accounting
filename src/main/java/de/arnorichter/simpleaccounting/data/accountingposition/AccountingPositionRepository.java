@@ -11,6 +11,6 @@ import java.util.List;
 public interface AccountingPositionRepository extends JpaRepository<AccountingPosition, Long>,
 		JpaSpecificationExecutor<User> {
 
-	@Query(value = "Select * From accounting_position where Month(date) = ?1", nativeQuery = true)
-	public List<AccountingPosition> findByMonth(int month);
+	@Query(value = "Select * From accounting_position where Month(date) = ?1 and Year(date) = ?2", nativeQuery = true)
+	public List<AccountingPosition> findByMonth(int month, int year);
 }

@@ -46,8 +46,8 @@ public class AccountingPostionService {
 //        return repository.findAll(filter, pageable);
 //    }
 
-	public List<AccountingPosition> findByMonth(int month) {
-		return repository.findByMonth(month);
+	public List<AccountingPosition> findByMonthYear(int month, int year) {
+		return repository.findByMonth(month, year);
 	}
 
 	public int count() {

@@ -61,12 +61,12 @@ public class AccountingView extends HorizontalLayout {
 	public AccountingView(AccountingPostionService service) {
 		accountingPostionService = service;
 		itemGrid = new Grid<>(AccountingPosition.class, false);
-		itemGrid.addColumn(AccountingPosition::getDescription).setHeader("Description");
+		itemGrid.addColumn(AccountingPosition::getDescription).setHeader("Description").setSortable(true);
 		itemGrid.addColumn(new NumberRenderer<>(AccountingPosition::getAmount, NumberFormat.getCurrencyInstance()))
-				.setHeader("Amount");
-		itemGrid.addColumn(createStatusComponentRenderer()).setHeader("Type");
+				.setHeader("Amount").setSortable(true).setComparator(AccountingPosition::getAmount);
+		itemGrid.addColumn(createStatusComponentRenderer()).setHeader("Type").setSortable(true);
 		itemGrid.addColumn(new LocalDateRenderer<>(AccountingPosition::getDate, "dd.MM.yyyy"))
-				.setHeader("Date");
+				.setHeader("Date").setSortable(true).setComparator(AccountingPosition::getDate);
 		itemGrid.addColumn(deleteItemComponentRenderer()).setHeader("Delete");
 
 		itemDescriptionTextField = new TextField("Description");
